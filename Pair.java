@@ -56,4 +56,9 @@ public class Pair<T extends Comparable<T>, K extends Comparable<K>>
 		}
 		return t.compareTo(pairT);
 	}
+	
+	public String toString() {
+		String toString = "<" + t + ", " + k + ">";
+		return toString;
+	}
 }

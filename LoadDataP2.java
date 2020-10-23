@@ -11,8 +11,12 @@ import java.util.Scanner;
  *
  */
 public class LoadDataP2 {
-  //The BST that stores all the states
-    private BST<State> bst;
+    //The BST that stores <Pair<Name, Date>, records>
+    private BST<Pair<String, String>, State> bstNameDate;
+    //The BST that stores <Pair<Date, Name>, records>
+    private BST<Pair<String, String>, State> bstDateName;
+    //The BST that stores <Pair<Grade ,<Pair<Name, Date>>, records>
+    private BST<Pair<String, Pair<String, String>>, State> bstGrade;
     //The array that stores state abbreviations
     private String[] state_abvs;
     //The total number of states in the US
@@ -20,13 +24,15 @@ public class LoadDataP2 {
     //The total number of records
     private int totalRecords = 0;
     //Array of the state names
-    String[] stateNames = new String[NUMBER_OF_STATES];
+    String[] stateNames = new String[NUMBER_OF_STATES];  
     
     /**
      * Constructor for the LoadData object
      */
     public LoadDataP2() {
-        bst = new BST<State>();
+        bstNameDate = new BST<Pair<String, String>, State>();
+        bstDateName = new BST<Pair<String, String>, State>();
+        bstGrade = new BST<Pair<String, Pair<String, String>>, State>();
         state_abvs = new String[NUMBER_OF_STATES];
     }
     
@@ -94,45 +100,70 @@ public class LoadDataP2 {
             //boolean that is true if state has the same abbreviation and date as another 
             //state in the bst
             boolean notSameName = true;
+            
+            //iterator to check on the certain criteria for updating or discarding data
+            //only need to iterate one bst
+            java.util.Iterator<Pair<String, String>> iterNameDate = bstNameDate.iterator();
 
-            java.util.Iterator<State> iter = bst.iterator();
-
-            //checks to see if other state in bst has same abbreviation and date and updates
-            //the data if needed
-            while (iter.hasNext() && validData) {
-                State iterState = iter.next();
-                if (iterState.getState().equals(state.getState()) &&
-                        iterState.getDate().equals(state.getDate())) {
+            while (iterNameDate.hasNext() && validData) {
+                Pair<String, String> iterPair = new Pair<String,String>(state.getState(), state.getDate());
+                BinaryNode<Pair<String, String>, State> node = bstNameDate.find(iterPair);
+                
+                if (node == null) {
+                    break;
+                }
+                else {
                     notSameName = false;
-                    if (isGradeBetter(state, iterState)) {
+                    State temp = node.getValue();
+                    if (isGradeBetter(state, temp)) {
                         System.out.println("Data has been updated for " + state.getState() +
-                                " " + changeDate(state.getDate()));
-                        state.insert(bst);
-                        bst.remove(iterState);
+                            " " + changeDate(state.getDate()));
                         tempRecords++;
+                        
+                        Pair<String, String> tempPairDateName = node.getKey();
+                        tempPairDateName = new Pair<String, String>(
+                            tempPairDateName.getK(), tempPairDateName.getT());
+                        
+                        Pair<String, Pair<String, String>> tempPairGrade = 
+                            new Pair<String, Pair<String, String>>(temp.getGrade(), iterPair);
+                        
+                        bstNameDate.remove(node.getKey(), node.getValue());
+                        bstDateName.remove(tempPairDateName, node.getValue());
+                        bstGrade.remove(tempPairGrade, node.getValue());
+                        
+                        bstNameDate.insert(new Pair<String, String>(state.getState(), state.getDate()), state);
+                        bstDateName.insert(tempPairDateName, state);
+                        bstGrade.insert(tempPairGrade, state);
                         break;
                     }
                     else {
-                        if (compareStates(iterState, state)) {
-                            tempRecords++;
+                        if (compareStates(temp, state)) {
                             System.out.println("Data has been updated for the missing " +
-                                    "data in " + state.getState());
+                                "data in " + state.getState());
+                            tempRecords++;
+                            break;
                         }
                         else {
                             System.out.println("Low quality data rejected for " + state.getState());
+                            break;
                         }
                     }
-                }
+                } 
             }
-
-            //print statements 
+            
+            //if the date and state has not been added yet
             if (validName && validData && notSameName) {
+                bstNameDate.insert(new Pair<String, String>(state.getState(), state.getDate()), state);
+                bstDateName.insert(new Pair<String, String>(state.getDate(), state.getState()), state);
+                bstGrade.insert(new Pair<String, Pair<String, String>>(state.getGrade(),
+                    new Pair<String, String>(state.getState(), state.getDate())), state);
                 tempRecords++;
-                state.insert(bst);
             }
+            //if the record is invalid
             else if (!validData) {
                 System.out.println("Discard invalid record");
             }
+            //if the state name does not exist
             else if (!validName) {
                 System.out.println("State of " + state.getState() + " does "
                         + "not exist!");

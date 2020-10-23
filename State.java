@@ -200,4 +200,8 @@ public class State implements Comparable<State> {
     public void setDeath(String str) {
         death = str;
     } 
+    
+    public String toString() {
+    	return death;
+    }
 }

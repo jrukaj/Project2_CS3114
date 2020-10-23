@@ -69,12 +69,6 @@ public class State implements Comparable<State> {
             return 0;
         }
     }
-    /**
-     * Inserts a state into the bst
-     */
-    public void insert(BST bst) {
-        bst.insert(this);
-    }
     
     /**
      * Returns date

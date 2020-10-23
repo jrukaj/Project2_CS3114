@@ -350,7 +350,7 @@ public class LoadDataP2 {
     		return;
     	}
     	else {
-    		System.out.println(spacing + rootNode.getKey() + rootNode.getValue());
+    		System.out.println(spacing + rootNode.getKey() + " " + rootNode.getValue().toString());
     		
     	}
     	if (!rootNode.isLeaf()) {

@@ -47,6 +47,10 @@ public class FileExecutor {
 
 
 			case "search":
+				ArrayList<String> modifiers = new ArrayList<String>();
+				for (String string: cmd) {
+					modifiers.add(string);
+				}
 				
 				break;
 				

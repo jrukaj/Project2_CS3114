@@ -826,13 +826,16 @@ public class LoadDataP2 {
 	 */
 	public void dumpBST(BinaryNode rootNode, String spacing) {
 		if (rootNode == null) {
+			System.out.println(spacing + "E");
 			return;
 		}
-		
-		dumpBST(rootNode.getLeft(), spacing + "  ");
+		if (!rootNode.isLeaf()) {
+		    dumpBST(rootNode.getLeft(), spacing + "  ");
+		}
 		System.out.println(spacing + rootNode.getKey() + " " + rootNode.getValue().toString());
-		dumpBST(rootNode.getRight(), spacing + "  ");
-
+		if (!rootNode.isLeaf()) {
+		    dumpBST(rootNode.getRight(), spacing + "  ");
+		}
 	}
 
 	public BST<Pair<String, String>, State> getNameDate(){

@@ -75,7 +75,7 @@ public class State implements Comparable<State> {
      * @return date
      */
     public String getDate() {
-        return date;
+        return changeDate(date);
     } 
     /**
      * Returns state Abbreviation
@@ -140,6 +140,21 @@ public class State implements Comparable<State> {
     public String getDeath() {
         return death;
     }
+    
+    /**
+	 * Changes the date to a readable form
+	 * @param str - The date from the data
+	 * @return The readable date
+	 */
+	private String changeDate(String str) {
+		String day, month, year;
+		year = str.substring(0,4);
+		month = str.substring(4,6);
+		day = str.substring(6,8);
+
+		return month + "/" + day + "/" + year;
+
+	}
     /**
      * Sets the date
      */

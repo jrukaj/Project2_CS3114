@@ -920,9 +920,11 @@ public class LoadDataP2 {
      */
     public void dumpBST(BinaryNode rootNode, String spacing) {
         if (rootNode == null) {
+        // if (rootNode.getLeft() == null && rootNode.getRight() == null) {
             System.out.println(spacing + "E");
             return;
         }
+        // }
         if (!rootNode.isLeaf()) {
             dumpBST(rootNode.getLeft(), spacing + "  ");
         }
